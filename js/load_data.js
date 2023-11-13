@@ -15,10 +15,15 @@ let parseXML = async () => {
     const xml = parser.parseFromString(responseText, "application/xml");
     console.log(xml)
 
+    renderizarLibros(xml, responseTextJS)
+}
+
+let renderizarLibros = (xml, responseTextJS) => {
     let actividadElement = document.querySelector("#actividad")
     actividadElement.innerHTML = ''
 
     let bookArr = xml.querySelectorAll("book")
+
     bookArr.forEach(book => {
         let book_author = book.querySelector("Book-Author").textContent
         let year = book.querySelector("Year-Of-Publication").textContent
@@ -26,33 +31,44 @@ let parseXML = async () => {
         let imgXML = book.querySelector("ISBN").textContent
         let imgNameJS = ''
         responseTextJS.forEach(bookJS => {
-            if (imgXML == bookJS["ISBN"]){
+            if (imgXML == bookJS["ISBN"]) {
                 imgNameJS = bookJS["Image-URL-M"];
-                }
-            })
+            }
+        })
         let plantilla = `
-    <div class="col-lg-2 mb-2 text-center">
-        <div class="card border-0 rounded-0">
-            <div class="card-image">
-                <img src= ${imgNameJS} alt="blog-img" class="img-fluid">
-            </div>
-        </div>
-        <div class="card-body text-capitalize">
-            <div class="card-meta fs-6">
-                <span class="meta-date"> ${book_author} </span>
-                <span class="meta-category">/ <a href="blog.html"> ${year} </a></span>
-            </div>
-            <h4 class="card-title">
-                <a href="buy.html"> ${book_title} </a>
-            </h4>
-        </div>
-    </div>`
+            <div class="col-lg-2 mb-2 text-center">
+                <div class="card border-0 rounded-0">
+                    <div class="card-image">
+                        <img src= ${imgNameJS} alt="blog-img" class="img-fluid">
+                    </div>
+                </div>
+                <div class="card-body text-capitalize">
+                    <div class="card-meta fs-6">
+                        <span class="meta-date"> ${book_author} </span>
+                        <span class="meta-category">/ <a href="blog.html"> ${year} </a></span>
+                    </div>
+                    <h4 class="card-title">
+                        <a href="buy.html"> ${book_title} </a>
+                    </h4>
+                </div>
+            </div>`
 
-    actividadElement.innerHTML += plantilla;
-    
-    
-    })
+        actividadElement.innerHTML += plantilla;
+    }
+)}
 
+let searchBook = () => {
+    let selectedBook = document.getElementById("newsletter1").value
+    console.log(selectedBook)
 }
 
+let loadBooks = () => {
+    //Handling event
+    let selectElement = document.querySelector("#buscador")
+    selectElement.addEventListener("click", searchBook)
+}
+
+
+
 parseXML()
+loadBooks()
